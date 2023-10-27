@@ -1,3 +1,9 @@
+// 2623. Memoize
+// Solved
+// Medium
+// Companies
+// Hint
+
 // Given a function fn, return a memoized version of that function.
 
 // A memoized function is a function that will never be called twice with the same inputs. Instead it will return a cached value.
@@ -64,7 +70,6 @@
 
 function memoize(fn) {
     const cache = {}
-    // console.log(fnName)
     return function(...args) {
         key = args.join(',')
         if (key in cache) return cache[key]
@@ -76,7 +81,7 @@ function memoize(fn) {
 function memoize2(fn){
     const cache = new Map()
     return function(...args){
-        key = args[0] + args[1] ? args[1] * 10001 : 0 //make unique key, arg 2 is multiplied by 10001 to get outside of constraint, essentially appending
+        key = args[0] + (args[1] ? args[1] * 10001 : 0) //make unique key, arg 2 is multiplied by 10001 to get outside of constraint, essentially appending
         if (cache.has(key)) return cache.get(key)
         res = fn(...args)
         cache.set(key, res)
