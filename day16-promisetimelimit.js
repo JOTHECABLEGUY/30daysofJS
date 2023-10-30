@@ -84,16 +84,16 @@
 var timeLimit = function(fn, t) {
     
   return async function(...args) {
-        return new Promise( (resolve, reject) => {
-            // setTimeout(() => reject("Time Limit Exceeded"), t); 
-            // fn(...args).then(resolve).catch(reject);
+    return new Promise( (resolve, reject) => {
+        // setTimeout(() => reject("Time Limit Exceeded"), t); 
+        // fn(...args).then(resolve).catch(reject);
 
-            orig_prom = fn(...args);
-            timer_prom = new Promise((_, rej) => setTimeout(() => rej("Time Limit Exceeded"), t));
-            return Promise.race([orig_prom, timer_prom])
-            }
-        ) 
-    };
+        orig_prom = fn(...args);
+        timer_prom = new Promise((_, rej) => setTimeout(() => rej("Time Limit Exceeded"), t));
+        return Promise.race([orig_prom, timer_prom]);
+      }
+    )
+  };
 };
 
 /**
