@@ -58,56 +58,55 @@
 // First action is always "TimeLimitedCache" and must be executed immediately, with a 0-millisecond delay
 
 // all in one
+// var TimeLimitedCache = function() {
+//     return {
+//         keys: [],
+//         vals: [],
+//         key_vals: new Map(),
+//         length: 0,
+//         remove: function(key){
+//             if (this.key_vals.has(key)){
+//                 clearTimeout(this.key_vals.get(key)[1]);
+//                 this.key_vals.delete(key);
+//                 this.length--;
+//                 key_index = this.keys.indexOf(key);
+//                 this.keys.pop(key_index);
+//                 this.vals.pop(key_index);
+//             }
+//             else{console.log(key)}
+//         },
+//         set: function(key, value, duration) {
+//             if (this.key_vals.has(key)) {
+//                 item = this.key_vals.get(key);
+//                 prev_ref = item[1];
+//                 ref = setTimeout(() => this.remove(key), duration);
+//                 this.key_vals.set(key, [value, ref]);
+//                 clearTimeout(prev_ref);
+//                 key_index = this.keys.indexOf(key);
+//                 this.vals[key_index] = value;
+//                 return true;
+//             }
+//             else{
+//                 ref = setTimeout(() => this.remove(key), duration);
+//                 this.key_vals.set(key, [value, ref]);
+//                 this.keys.push(key);
+//                 this.vals.push(value);
+//                 this.length++;
+//                 return false;
+//             }
+//         },
+//         get: function(key) {
+//             if (this.key_vals.has(key)){
+//                 return this.key_vals.get(key)[0];
+//             }
+//             return -1
+//         },
+//         count: function(){return this.length;}
+//     }
+// };
 var TimeLimitedCache = function() {
-    return {
-        keys: [],
-        vals: [],
-        key_vals: new Map(),
-        length: 0,
-        remove: function(key){
-            if (this.key_vals.has(key)){
-                clearTimeout(this.key_vals.get(key)[1]);
-                this.key_vals.delete(key);
-                this.length--;
-                key_index = this.keys.indexOf(key);
-                this.keys.pop(key_index);
-                this.vals.pop(key_index);
-            }
-            else{console.log(key)}
-        },
-        set: function(key, value, duration) {
-            if (this.key_vals.has(key)) {
-                item = this.key_vals.get(key);
-                prev_ref = item[1];
-                ref = setTimeout(() => this.remove(key), duration);
-                this.key_vals.set(key, [value, ref]);
-                clearTimeout(prev_ref);
-                key_index = this.keys.indexOf(key);
-                this.vals[key_index] = value;
-                return true;
-            }
-            else{
-                ref = setTimeout(() => this.remove(key), duration);
-                this.key_vals.set(key, [value, ref]);
-                this.keys.push(key);
-                this.vals.push(value);
-                this.length++;
-                return false;
-            }
-        },
-        get: function(key) {
-            if (this.key_vals.has(key)){
-                return this.key_vals.get(key)[0];
-            }
-            return -1
-        },
-        count: function(){return this.length;}
-    }
-};
-
-
-var TimeLimitedCache = function() {
-    
+    this.key_vals = new Map();
+    this.length = 0;
 };
 
 /** 
@@ -117,7 +116,11 @@ var TimeLimitedCache = function() {
  * @return {boolean} if un-expired key already existed
  */
 TimeLimitedCache.prototype.set = function(key, value, duration) {
-    
+    ret_val = key in this.key_vals
+    if (ret_val) clearTimeout(this.key_vals[key][1])
+    else this.length++
+    this.key_vals[key] = [value, setTimeout( () => {delete this.key_vals[key]; this.length--;}, duration)]
+    return ret_val
 };
 
 /** 
@@ -125,14 +128,15 @@ TimeLimitedCache.prototype.set = function(key, value, duration) {
  * @return {number} value associated with key
  */
 TimeLimitedCache.prototype.get = function(key) {
-    
+    item = this.key_vals[key];
+    return item ? item[0] : -1;
 };
 
 /** 
  * @return {number} count of non-expired keys
  */
 TimeLimitedCache.prototype.count = function() {
-    
+    return this.length;
 };
 
 /**
