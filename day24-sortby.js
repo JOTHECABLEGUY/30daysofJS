@@ -37,7 +37,7 @@
  */
 
 
-// without Array.sort (inspiration from Geeks for Geeks implementation of MergeSort)
+// without Array.prototype. sort (inspiration from Geeks for Geeks implementation of MergeSort)
 var merge = (arr, left_index, mid_index, right_index, fn) => {
     left = []
     for (var i = 0; i<mid_index-left_index+1; i++){
@@ -92,7 +92,7 @@ var sortBy = function(arr, fn) {
     return arr
 };
 
-// with array.sort
+// with Array.prototype.sort
 var sortBy = function(arr, fn) {
     var compare = (a, b) => a - b > 0 ? 1: -1 
     return arr.sort((a, b) => compare(fn(a), fn(b)));
